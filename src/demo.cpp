@@ -91,8 +91,21 @@ int main() {
                     cout << "Deposit succeeded. Your account balance : $" << controller.checkBalance() << "." << endl;
                     break;
                 }
-                case WITHDRAW:
+                case WITHDRAW: {
+                    string input;
+                    cout << "Press how much money you'll withdraw." << endl;
+                    cout << "Cash to withdraw (ex: 500) : ";
+                    cin >> input;
+                    if (!controller.checkValidInput(input)) {
+                        cout << "Invalid input. Cash must consist only digit." << endl;
+                        throw runtime_error("Invalid input.");
+                    }
+                    cout << "Withdraw $" << input << " to account. Please wait..." << endl;
+                    controller.withdrawMoney(stoi(input));
+                    sleep(1000);
+                    cout << "Deposit succeeded. Your account balance : $" << controller.checkBalance() << "." << endl;
                     break;
+                }
                 default:
                     break;
             }

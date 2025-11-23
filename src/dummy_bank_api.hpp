@@ -8,6 +8,7 @@ using namespace std;
 class DummyBankAPI {
 public:
     DummyBankAPI() {
+        cardDB_.push_back(cardInfo{"12345678", "0000", 5000});
         cardDB_.push_back(cardInfo{"123456789012", "1234", 3000});
     }
 
@@ -39,6 +40,18 @@ public:
         for (int i = 0; i < cardDB_.size(); i++) {
             if (cardDB_[i].cardNumber == cardNum) {
                 cardDB_[i].balance += money;
+                break;
+            }
+        }
+    }
+
+    bool withdrawMoney(const string& cardNum, int money) {
+        for (int i = 0; i < cardDB_.size(); i++) {
+            if (cardDB_[i].cardNumber == cardNum) {
+                if (cardDB_[i].balance < money) {
+                    throw runtime_error("Balance not enough.");
+                }
+                cardDB_[i].balance -= money;
                 break;
             }
         }
