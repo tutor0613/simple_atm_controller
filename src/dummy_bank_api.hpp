@@ -45,7 +45,7 @@ public:
         }
     }
 
-    bool withdrawMoney(const string& cardNum, int money) {
+    void withdrawMoney(const string& cardNum, int money) {
         for (int i = 0; i < cardDB_.size(); i++) {
             if (cardDB_[i].cardNumber == cardNum) {
                 if (cardDB_[i].balance < money) {

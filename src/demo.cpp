@@ -101,9 +101,11 @@ int main() {
                         throw runtime_error("Invalid input.");
                     }
                     cout << "Withdraw $" << input << " to account. Please wait..." << endl;
-                    controller.withdrawMoney(stoi(input));
                     sleep(1000);
+                    controller.withdrawMoney(stoi(input));
                     cout << "Deposit succeeded. Your account balance : $" << controller.checkBalance() << "." << endl;
+                    cout << "Take a cash from cash bin..." << endl;
+                    sleep(1000);
                     break;
                 }
                 default:
