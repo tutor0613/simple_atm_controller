@@ -7,40 +7,8 @@ string pinNum_ = "";
 
 enum Menu {BALANCE, DEPOSIT, WITHDRAW, NONE};
 
-
-bool checkValidInput(const string& str) {
-    bool isValid = true;
-    for (char c : str) {
-        int ascii = static_cast<int>(c);
-        if (ascii < 48 || ascii > 57) isValid = false;
-    }
-    return isValid;
-}
-
-bool insertCard() {
-    string input;
-    cout << "Insert your card. (Replace to get card number.)" << endl;
-    cout << "Card number (ex: 12345678) : ";
-    cin >> input;
-    if (!checkValidInput(input)) {
-        cout << "Invalid input. Card number must consist only digit." << endl;
-        return false;
-    }
-
-    cardNum_ = input;
-    input = "";
-
-    cout << "Press PIN number of this account." << endl;
-    cout << "PIN number (ex: 1234) : ";
-    cin >> input;
-    if (!checkValidInput(input)) {
-        cout << "Invalid input. PIN number must consist only digit." << endl;
-        cardNum_ = "";
-        return false;
-    }
-    pinNum_ = input;
-
-    return true;
+void sleep(int ms) {  // [ms]
+    this_thread::sleep_for(chrono::milliseconds(ms));
 }
 
 int main() {
@@ -76,33 +44,65 @@ int main() {
         else cout << "Wrong input." << endl;
 
         if (menu != NONE) {
-            if (insertCard()) {
-                if (!controller.verifyCardInfo(cardNum_, pinNum_)) {
-                    cout << "Invalid Card. (Card number and PIN number isn't match.)" << endl;
-                    cardNum_ = "";
-                    pinNum_ = "";
-                }
-                else {
-                    switch (menu) {
-                        case BALANCE:
-                            cout << "Your account balance : $" << controller.checkBalance() << "." << endl;
-                            break;
-                        case DEPOSIT:
-                            break;
-                        case WITHDRAW:
-                            break;
-                        default:
-                            break;
+            string input;
+            cout << "Insert your card. (Replace to get card number.)" << endl;
+            cout << "Card number (ex: 12345678) : ";
+            cin >> input;
+            if (!controller.checkValidInput(input)) {
+                cout << "Invalid input. Card number must consist only digit." << endl;
+                throw runtime_error("Invalid input.");
+            }
+            cardNum_ = input;
+            input = "";
+
+            cout << "Press PIN number of this account." << endl;
+            cout << "PIN number (ex: 1234) : ";
+            cin >> input;
+            if (!controller.checkValidInput(input)) {
+                cout << "Invalid input. PIN number must consist only digit." << endl;
+                throw runtime_error("Invalid input.");
+            }
+            pinNum_ = input;
+
+            if (!controller.verifyCardInfo(cardNum_, pinNum_)) {
+                cout << "Invalid Card. (Card number and PIN number isn't match.)" << endl;
+                throw runtime_error("Invalid card information.");
+            }
+
+            cout << "Card identified. Please wait..." << endl << endl;
+            sleep(1000);
+
+            switch (menu) {
+                case BALANCE:
+                    cout << "Your account balance : $" << controller.checkBalance() << "." << endl;
+                    break;
+                case DEPOSIT: {
+                    string input;
+                    cout << "Put in cash into cash bin. (Replace to get number [$].)" << endl;
+                    cout << "Cash to deposit (ex: 500) : ";
+                    cin >> input;
+                    if (!controller.checkValidInput(input)) {
+                        cout << "Invalid input. Cash must consist only digit." << endl;
+                        throw runtime_error("Invalid input.");
                     }
+                    controller.depositMoney(stoi(input));
+                    cout << "Deposit $" << input << " to account. Please wait..." << endl;
+                    sleep(1000);
+                    cout << "Deposit succeeded. Your account balance : $" << controller.checkBalance() << "." << endl;
+                    break;
                 }
+                case WITHDRAW:
+                    break;
+                default:
+                    break;
             }
         }
-
-        cout << "Program will be terminated." << endl;
     }
     catch (const exception& e) {
-        cout << "Except in main : " << e.what() << endl;
+        cout << e.what() << endl;
     }
+
+    cout << endl << "Program will be terminated." << endl;
 
     return 0;
 }

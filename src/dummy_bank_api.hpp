@@ -35,6 +35,15 @@ public:
         return balance;
     }
 
+    void depositMoney(const string& cardNum, int money) {
+        for (int i = 0; i < cardDB_.size(); i++) {
+            if (cardDB_[i].cardNumber == cardNum) {
+                cardDB_[i].balance += money;
+                break;
+            }
+        }
+    }
+
 private:
     struct cardInfo {
         string cardNumber;

@@ -4,7 +4,16 @@ ATMController::ATMController() {
     bankAPI = DummyBankAPI();
 }
 
-bool ATMController::verifyCardInfo(const std::string& cardNum, const std::string& pinNum) {
+bool ATMController::checkValidInput(const string& str) {
+    bool isValid = true;
+    for (char c : str) {
+        int ascii = static_cast<int>(c);
+        if (ascii < 48 || ascii > 57) isValid = false;
+    }
+    return isValid;
+}
+
+bool ATMController::verifyCardInfo(const string& cardNum, const string& pinNum) {
     bool isValid = bankAPI.verifyCardInfo(cardNum, pinNum);
     if (isValid) {
         cardNum_ = cardNum;
@@ -17,4 +26,8 @@ int ATMController::checkBalance() {
     int balance = 0;
     if (cardNum_ != "") balance = bankAPI.seeBalance(cardNum_);
     return balance;
+}
+
+void ATMController::depositMoney(int money) {
+    if (cardNum_ != "") bankAPI.depositMoney(cardNum_, money);
 }
